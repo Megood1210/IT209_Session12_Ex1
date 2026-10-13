@@ -1,0 +1,31 @@
+name: Matrix Test
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test-matrix:
+    name: test-matrix
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java-version: ['17', '21']
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v5
+
+      - name: Set up Java ${{ matrix.java-version }}
+        uses: actions/setup-java@v5
+        with:
+          distribution: 'temurin'
+          java-version: ${{ matrix.java-version }}
+          cache: 'gradle'
+
+      - name: Grant execute permission for Gradle Wrapper
+        run: chmod +x gradlew
+
+      - name: Run Gradle tests
+        run: ./gradlew test
